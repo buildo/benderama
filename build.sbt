@@ -1,9 +1,11 @@
+scalaVersion := "2.11.8"
+
 libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc"        % "2.4.+",
   "org.scalikejdbc" %% "scalikejdbc-config" % "2.4.+",
   "ch.qos.logback"  %  "logback-classic"    % "1.1.+",
   "mysql" % "mysql-connector-java" % "5.1.6",
-  "com.chuusai" %% "shapeless" % "2.3.1",
+  "com.chuusai" %% "shapeless" % "2.3.2",
   "com.github.nscala-time" %% "nscala-time" % "2.12.0",
   "com.typesafe" % "config" % "1.3.0",
   "com.github.philcali" %% "cronish" % "0.1.3",
