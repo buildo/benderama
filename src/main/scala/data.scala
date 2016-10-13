@@ -2,18 +2,30 @@ package benderama
 import scalikejdbc._
 
 package object data {
+  val maxRows = 5000
+
   def table(tableName: String): Map[String, BenderColumn] = DB readOnly { implicit session =>
     DB.getTable(tableName)
       .map(_.columns).getOrElse(throw new Exception("table not found"))
       .map { c =>
-        val (columnName, columnType, isAutoIncrement) = (c.name, c.typeName, c.isAutoIncrement)
-        val dataQuery = SQL(s"select $columnName from $tableName")
+        val (columnName, columnType, isAutoIncrement, isRequired) = (c.name, c.typeName, c.isAutoIncrement, c.isRequired)
+        val q = SQL(s"select $columnName from $tableName limit $maxRows")
         val benderColumn = columnType match {
-          case "TEXT" => BenderColumnString(isAutoIncrement, dataQuery.map(w => w.string(columnName)).list.apply)
-          case "VARCHAR" => BenderColumnString(isAutoIncrement, dataQuery.map(w => w.string(columnName)).list.apply)
-          case "INT" => BenderColumnInt(isAutoIncrement, dataQuery.map(w => w.int(columnName)).list.apply)
-          //case "LONG" => dataQuery.map(w => w.long(columnName)).list.apply)
-          //case "DATETIME" => BenderdataQuery.map(w =>w.jodaDateTime(columnName)).list.apply)
+          case "TEXT" =>
+            val d = if (isRequired) q.map(_.string(columnName)).list.apply
+                    else q.map(_.stringOpt(columnName)).list.apply.flatten
+
+            BenderColumnString(isAutoIncrement, isRequired, d)
+          case "VARCHAR" =>
+            val d = if (isRequired) q.map(_.string(columnName)).list.apply
+                    else q.map(_.stringOpt(columnName)).list.apply.flatten
+
+            BenderColumnString(isAutoIncrement, isRequired, d)
+          case "INT" =>
+            val d = if (isRequired) q.map(_.int(columnName)).list.apply
+                    else q.map(_.intOpt(columnName)).list.apply.flatten
+
+            BenderColumnInt(isAutoIncrement, isRequired, d)
           case other => throw new Exception(other)
         }
 

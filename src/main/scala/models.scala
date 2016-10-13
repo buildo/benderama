@@ -43,13 +43,13 @@ package object models {
       customModelMappings: Map[String, BenderModel] = Map.empty
     ): Map[String, BenderModel] = s map { case (k, v) =>
       val model: BenderModel = v match {
-        case BenderColumnString(_, data) =>
+        case BenderColumnString(_, _, data) =>
           val customModel = customModelMappings.get(k)
           customModel match {
             case Some(model) => model
             case None => StringFrequencyBasedBenderModel(data)
           }
-        case BenderColumnInt(_, data) =>
+        case BenderColumnInt(_, _, data) =>
           val customModel = customModelMappings.get(k)
           customModel match {
             case Some(model) => model

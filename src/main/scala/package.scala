@@ -16,8 +16,18 @@ package object benderama {
 
   sealed trait BenderColumn {
     def isAutoIncrement: Boolean
+    def isRequired: Boolean
   }
 
-  case class BenderColumnInt(isAutoIncrement: Boolean, data: Seq[Int]) extends BenderColumn
-  case class BenderColumnString(isAutoIncrement: Boolean, data: Seq[String]) extends BenderColumn
+  case class BenderColumnInt(
+    isAutoIncrement: Boolean,
+    isRequired: Boolean,
+    data: Seq[Int]
+  ) extends BenderColumn
+
+  case class BenderColumnString(
+    isAutoIncrement: Boolean,
+    isRequired: Boolean,
+    data: Seq[String]
+  ) extends BenderColumn
 }
